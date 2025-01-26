@@ -4,7 +4,7 @@ const item=require('../models/item');
 
 //create post method for item
 
-router.post('/item',async(req,res)=>{
+router.post('/',async(req,res)=>{
     try{
       const data=req.body;
       const newitem=new item(data);
@@ -20,7 +20,7 @@ router.post('/item',async(req,res)=>{
 
 //create get method for item
 
-router.get('/item',async(req,res)=>{
+router.get('/',async(req,res)=>{
     try{
      const response=await item.find();
      console.log('item is founded...');
@@ -32,9 +32,29 @@ router.get('/item',async(req,res)=>{
     }
 });
 
+//create a paramiterize url using get method for item
+
+router.get('/:name',async(req,res)=>{
+    try{
+      const name=req.params.name;
+      if(['panner','chicken'].includes(name)){
+        const response=await item.find({name:name});
+        console.log('item is founded...');
+        res.status(200).json(response);
+      }
+      else{
+        return res.status(404).json('item name is invalid...');
+      }
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({err:'Internal server error...'});
+    }
+});
+
 //create delete method for item
 
-router.delete('/item/:id',async(req,res)=>{
+router.delete('/:id',async(req,res)=>{
     try{
       const itemId=req.params.id;
       const response=await item.findByIdAndDelete(itemId);
@@ -52,7 +72,7 @@ router.delete('/item/:id',async(req,res)=>{
 
 //create put or patch method for item
 
-router.patch('/item/:id',async(req,res)=>{
+router.patch('/:id',async(req,res)=>{
     try{
        const itemdata=req.body;
        const itemid=req.params.id;
